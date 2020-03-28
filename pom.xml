@@ -54,27 +54,20 @@
         </exclusion>
       </exclusions>
     </dependency>
-
-    <!--        <dependency>-->
-    <!--            <groupId>eu.bitwalker</groupId>-->
-    <!--            <artifactId>UserAgentUtils</artifactId>-->
-    <!--            <version>1.21</version>-->
-    <!--        </dependency>-->
-
     <dependency>
       <groupId>com.hortonworks</groupId>
       <artifactId>shc-core</artifactId>
       <version>1.1.1-2.1-s_2.11</version>
     </dependency>
-
   </dependencies>
   <repositories>
     <repository>
       <id>hortonworks</id>
       <name>hortonworks</name>
-      <url>https://mvnrepository.com/artifact/org.apache.hbase.connectors.spark/hbase-spark</url>
+      <url>https://repo.hortonworks.com/content/repositories/releases/</url>
     </repository>
   </repositories>
+
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
