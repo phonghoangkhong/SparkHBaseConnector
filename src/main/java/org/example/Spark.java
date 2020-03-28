@@ -76,57 +76,7 @@ public class Spark  implements Serializable {
         return uuid;
     }
 
-    String send(long a) {
-        try {
-            URL url = new URL("http://10.5.36.129:8104/uuid_from_guid_mb/" + a);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            //add reuqest header
-            con.setRequestMethod("GET");
 
-            // Send post request
-            con.setReadTimeout(2000);
-            con.setConnectTimeout(2000);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String uuid;
-            StringBuilder response = new StringBuilder();
-            while ((uuid = in.readLine()) != null) {
-                response.append(uuid);
-            }
-            in.close();
-            con.disconnect();
-            return response.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
 
-    // Thống kê map guid-uuid aerospike
-    void thongkeMapGuidUUID(SparkSession ss) {
-        LongAccumulator accum = ss.sparkContext().longAccumulator();
-        Dataset<Row> a = ss.read().parquet(hdfs + "data/Parquet/PageViewV1/2020_03_09").select("guid").distinct();
-        System.out.println(a.count());
-        JavaRDD<Row> b = a.toJavaRDD().mapPartitions(rowIterator -> {
-            AerospikeClient client = new AerospikeClient(new ClientPolicy(), HOSTS);
-            List<Row> list = new ArrayList<>();
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                String guid = String.valueOf(row.getLong(0));
-                Record record = client.get(new Policy(), new Key("hdd_hadoop", "mob_guid_uuid", guid));
-                if (record != null) {
-                    accum.add(1);
-                } else {
-                    record = client.get(new Policy(), new Key("hdd_hadoop", "pc_guid_uuid", guid));
-                    if (record != null) {
-                        accum.add(1);
-                    }
-                }
-            }
-            client.close();
-            return list.iterator();
-        });
-        System.out.println(b.count());
-        System.out.println(accum);
-    }
+
 }
